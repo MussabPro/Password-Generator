@@ -86,7 +86,7 @@
   </head>
   <body>
     <!-- The actual snackbar -->
-    <div id="snackbar">Text Copied!</div>
+    <div id="snackbar">Password Copied!</div>
     <div
       class="min-h-screen d-flex flex-column justify-content-center align-items-center"
     >
@@ -101,7 +101,7 @@
           <div class="form-check">
             <h6 class="display-6">Include UpperCase letters</h6>
 
-            <div class="my-2 ml-2 w-50 flex flex-row">
+            <div class="my-2 w-100 flex flex-row">
               <input
                 type="radio"
                 class="btn-check"
@@ -133,7 +133,7 @@
             </div>
             <h6 class="display-6">Include LowerCase letters</h6>
 
-            <div class="my-2 ml-2 w-50 flex flex-row">
+            <div class="my-2 w-100 flex flex-row">
               <input
                 type="radio"
                 class="btn-check"
@@ -165,7 +165,7 @@
             </div>
             <h6 class="display-6">Include Digits</h6>
 
-            <div class="my-2 ml-2 w-50 flex flex-row">
+            <div class="my-2 w-100 flex flex-row">
               <input
                 type="radio"
                 class="btn-check"
@@ -196,7 +196,7 @@
               >
             </div>
             <h6 class="display-6">Include Symbols</h6>
-            <div class="my-2 ml-2 w-50 flex flex-row">
+            <div class="my-2 w-100 flex flex-row">
               <input
                 type="radio"
                 class="btn-check"
@@ -226,6 +226,9 @@
                 >No</label
               >
             </div>
+            <div class="text-red-500 mt-2" id="radioerr" style="display: none">
+              Please select at least one option for password generation.
+            </div>
           </div>
           <div class="form-check">
             <label class="mx-2 form-label" for="passwordlen"
@@ -254,6 +257,9 @@
               required
             />
             <div class="invalid-feedback">Number of Passwords is Required.</div>
+            <div class="text-red-500 mt-2" id="lenerr" style="display: none">
+              Please enter a value greater than or equal to 1 for both inputs.
+            </div>
           </div>
           <div class="d-flex flex-row justify-content-center mt-4 mb-3">
             <button type="submit" class="btn btn-outline-warning">
@@ -264,7 +270,7 @@
       </div>
       {% if passwords|length==0 %} {% else %}
       <div
-        class="shadow-xl shadow-black grid grid-cols-4 grid-flow-row gap-4 rounded container bg-dark p-3 my-4"
+        class="shadow-xl shadow-black grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 grid-flow-row gap-4 rounded container bg-dark p-3 my-4"
       >
         {% for password in passwords %}
         <div
@@ -314,6 +320,50 @@
           form.addEventListener(
             "submit",
             (event) => {
+              // Custom validation: check if all radios have value "no"
+              const includeUppercase = document.querySelector(
+                'input[name="includeuppercase"]:checked'
+              ).value;
+              const includeLowercase = document.querySelector(
+                'input[name="includelowercase"]:checked'
+              ).value;
+              const includeDigits = document.querySelector(
+                'input[name="includedight"]:checked'
+              ).value;
+              const includeSymbols = document.querySelector(
+                'input[name="includesymbols"]:checked'
+              ).value;
+
+              const radioErr = document.getElementById("radioerr");
+              if (
+                includeUppercase === "n" &&
+                includeLowercase === "n" &&
+                includeDigits === "n" &&
+                includeSymbols === "n"
+              ) {
+                radioErr.style.display = "block";
+                event.preventDefault();
+                return;
+              } else {
+                radioErr.style.display = "none";
+              }
+
+              // Custom validation: enforce minimum limit of 1 for password length
+              const passwordLenInput = document.getElementById("passwordlen");
+              const passwordNoInput =
+                document.getElementById("NumberofPasswords");
+              const lenErr = document.getElementById("lenerr");
+              if (
+                (!passwordLenInput.value == "" && passwordLenInput.value < 1) ||
+                (!passwordNoInput.value == "" && passwordNoInput.value < 1)
+              ) {
+                lenErr.style.display = "block";
+                event.preventDefault();
+                return;
+              } else {
+                lenErr.style.display = "none";
+              }
+
               if (!form.checkValidity()) {
                 event.preventDefault();
                 event.stopPropagation();
