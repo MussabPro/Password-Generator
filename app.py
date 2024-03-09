@@ -55,7 +55,3 @@ def home():
 
     passwords = session.get("passwords", [])
     return render_template("index.html", passwords=passwords)
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
